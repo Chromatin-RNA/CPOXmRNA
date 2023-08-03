@@ -348,4 +348,4 @@ plot2 <- ggdotchart(dataToPlot, x = "Category", y = "loop",
 
 TAD.loop.interaction.categories.plot = gridExtra::grid.arrange(plot1, plot2, ncol = 2, widths = c(1,2.5)) 
 
-ggsave("TAD.loop.interaction.categories.png", TAD.loop.interaction.categories.plot,width = 20, height = 15, units = "cm")
+
