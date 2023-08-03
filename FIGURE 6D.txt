@@ -1,0 +1,58 @@
+##########################################################################################################################################################
+#                                                                                                                                                        #
+#                                                         THIS FILE CONTAINS CODE FOR FIGURE 6D                                                          #
+#                                                                                                                                                        #
+##########################################################################################################################################################
+
+
+###=======================================================================================================================================================
+### PREPARE DATA FOR R PLOT FIGURE 6D
+###=======================================================================================================================================================
+
+bedtools sort -i refGene_hg19_TSS.bed | uniq > hg19.refGene.tss.uniq.srt.bed
+
+
+bedtools closest -D b \
+    -a <(awk '{print "chr"$0}' /data/xieb2/G1ER/primary_AML/ICGC/ICGC.release28.simple_somatic_mutation.open.WGS.tsv.srt.bed) \
+    -b hg19.refGene.tss.uniq.srt.bed > ICGC.release28.WGS.refGene.tss.txt
+
+# make MAF file for oncoplot
+awk '$6!=-1' ICGC.release28.WGS.refGene.tss.txt | sed 's?|?\t?;s?|?\t?;s?|?\t?;s?|?\t?;s?|?\t?;s?|?\t?;' | \
+    awk -F"\t" -vOFS="\t" '{type="nonPromoter";if($16>0 && $16<100){type="TSS+100"}if($16>-500 && $16<0){type="TSS-500"}if($16>-5000 && $16<=-500){type="TSS-5K"}if($16>=100 && $16<1000){type="TSS+1K"}print $14,$1,$2,$3,$8,$9,$7,type,$4"|"$5}' \
+    > ICGC.release28.WGS.refGene.tss.detail.maf
+	
+
+grep -v "nonPromoter" ICGC.release28.WGS.refGene.tss.detail.maf > ICGC.release28.WGS.refGene.tss.detail.promoter.maf
+
+head -1 ICGC.release28.WGS.refGene.tss.detail.promoter.maf > ICGC.release28.WGS.refGene.tss.promoter.maf
+awk '$6!=-1 && $11>-1000 && $11<1000' ICGC.release28.WGS.refGene.tss.txt | sed 's?|?\t?;s?|?\t?;s?|?\t?;s?|?\t?;s?|?\t?;s?|?\t?;' | \
+    awk -F"\t" -vOFS="\t" '{type="TSS+(-1000,1000)";print $14,$1,$2,$3,$8,$9,$7,type,$4"|"$5}' \
+    >> ICGC.release28.WGS.refGene.tss.promoter.maf
+	
+	
+###=======================================================================================================================================================
+###  R PLOT FIGURE 6D
+###=======================================================================================================================================================
+
+library(maftools)
+library(data.table)
+
+col <- c("forestgreen")
+names(col) = c("TSS+(-1000,1000)")
+mymaf <- read.maf(maf = "ICGC.release28.WGS.refGene.tss.promoter.maf", vc_nonSyn = "TSS+(-1000,1000)")
+
+
+pdf(file = paste("ICGC.release28.WGS.PSMD3", "oncoplot.1col.pdf", sep = "."))
+par(oma=c(3,4,3,3))
+oncoplot(maf = mymaf, colors = col, fontSize = 1.5, genes = c("PSMD3", "CDK12"))
+dev.off()
+
+pdf(file = paste("ICGC.release28.WGS.EEFSEC", "oncoplot.1col.pdf", sep = "."))
+par(oma=c(3,4,3,3))
+oncoplot(maf = mymaf, colors = col, fontSize = 1.5, genes = c("EEFSEC", "RPN1"))
+dev.off
+
+pdf(file = paste("ICGC.release28.WGS.TRA2B", "oncoplot.1col.pdf", sep = "."))
+par(oma=c(3,4,3,3))
+oncoplot(maf = mymaf, colors = col, fontSize = 1.5, genes = c("TRA2B", "IGF2BP2"))
+dev.off()
