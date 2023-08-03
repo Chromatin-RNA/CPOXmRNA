@@ -1,5 +1,7 @@
 ##################################################################################################
-### THIS FILE CONTAINS EXAMPLE CODE FOR FIGURE 6 A&B AND EXTENDED FIGURE 6 A&B                 ###
+###                                                                                            ###
+###        THIS FILE CONTAINS EXAMPLE CODE FOR FIGURE 6 A&B AND EXTENDED FIGURE 6 A&B          ###
+###                                                                                            ###
 ##################################################################################################
 
 
