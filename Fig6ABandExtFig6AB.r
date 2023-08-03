@@ -30,12 +30,12 @@ CELLTYPE.TAD = makeGenomicInteractionsFromFile("CELLTYPE.TAD.5K.bedpe",
                                 description="CELLTYPE.TAD.5kb")
 								
 ###===============================================================================================
-### 2. 
+### 2. GET THE LIST OF REFSEQ TRANSCRIPTS
 ###===============================================================================================								
 
 
 ###===============================================================================================
-### 2. 1 mouse
+### 2. 1 MOUSE REFSEQ TRANSCRIPTS
 ###===============================================================================================	
 
 # Mouse use makeTxDbFromGFF instead of makeTxDbFromUCSC, since "makeTxDbFromUCSC" recently suddenly not working
@@ -49,7 +49,7 @@ non_pseudogene = names(refseq.transcripts) %in% unlist(refseq.genes$gene_id)
 refseq.transcripts = refseq.transcripts[non_pseudogene] 
 
 ###===============================================================================================
-### 2. 2 human
+### 2. 2 HUMAN REFSEQ TRANSCRIPTS
 ###===============================================================================================
 hg19.refseq.db <- makeTxDbFromUCSC(genome="hg19", table="refGene")
 refseq.genes = genes(hg19.refseq.db)
@@ -137,7 +137,7 @@ write.table(hg19.ensembl_IDs_groupname, "hg19_refseq_ensembl_hgnc_geneID.txt",
 
 
 ###===============================================================================================
-### 5. annotation.features
+### 5. ANNOTATE FEATURES
 ###===============================================================================================
 
 annotation.features = list(promoter=refseq.promoters, 
