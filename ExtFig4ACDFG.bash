@@ -35,6 +35,8 @@ wget https://www.encodeproject.org/files/ENCFF116DCE/@@download/ENCFF116DCE.bigW
 
 wget http://hgdownload.cse.ucsc.edu/goldenpath/mm10/bigZips/mm10.chrom.sizes
 
+module load bedtools
+
 bedtools slop  -i ENCFF972YIT.bed.gz -g mm10.chrom.sizes -b 1000 > MEL_H3K27ac_1k.bed
 
 
@@ -101,6 +103,9 @@ python binary.heatmap.py
 
 #################
 #plot heatmap
+
+module load deeptools
+
 computeMatrix reference-point -R /data/xieb2/2023_MEL_p300_PRC2_loop/20230523.MEL.p300/Binary.heatmap/intervals/H3K27ac_and_p300.bed /data/xieb2/2023_MEL_p300_PRC2_loop/20230523.MEL.p300/Binary.heatmap/intervals/p300.bed -S ENCFF116DCE.bigWig ENCFF847MJA.bigWig ENCFF336CRJ.bigWig \
   -a 5000 -b 5000 --skipZeros -o MEL_p300_H3K27ac_twoGroups_scaled2.gz --outFileNameMatrix MEL_p300_H3K27ac_twoGroups_scaled2.tab --outFileSortedRegions MEL_p300_H3K27ac_twoGroups_genes2.bed 
 
@@ -116,6 +121,8 @@ plotHeatmap -m MEL_p300_H3K27ac_twoGroups_scaled2.gz \
 ###======================================================================================================================================
 ### 5. EXTENDED FIGURE. 4C
 ###======================================================================================================================================
+
+module load homer
 
 findMotifsGenome.pl /data/xieb2/2023_MEL_p300_PRC2_loop/20230523.MEL.p300/Binary.heatmap/intervals/p300.bed mm10 MEL_p300_only_MotifOutput/ -size 200
 
@@ -138,6 +145,7 @@ wget https://www.encodeproject.org/files/ENCFF152JNC/@@download/ENCFF152JNC.bed.
 
 wget https://www.encodeproject.org/files/ENCFF944GOL/@@download/ENCFF944GOL.bigWig
 
+module load deeptools
 
 computeMatrix reference-point -R /data/xieb2/2023_MEL_p300_PRC2_loop/20230523.MEL.p300/Binary.heatmap/intervals/p300.bed -S ENCFF688GOC.bigWig ENCFF222HZM.bigWig ENCFF944GOL.bigWig \
   -a 5000 -b 5000 --skipZeros -o MEL_p300_only_TF_scaled.gz --outFileNameMatrix MEL_p300_only_TF_scaled.tab --outFileSortedRegions MEL_p300_only_TF.bed 
@@ -146,15 +154,16 @@ computeMatrix reference-point -R /data/xieb2/2023_MEL_p300_PRC2_loop/20230523.ME
 plotProfile -m MEL_p300_only_TF_scaled.gz -out MEL_p300_only_TF.png --perGroup --refPointLabel "p300 only" --samplesLabel "ELF1" "GATA1" "MYC" --plotTitle "MEL.p300.only.peak.overlapping.TFs.profile.2" --colors red blue green
 
 ###======================================================================================================================================
-### 7. LIFTOVER TAD AND LOOP FILES FROM MM9 TO MM10
+### 7. LIFTOVER LOOP FILES FROM MM9 TO MM10
 ###======================================================================================================================================
 
 # APA analysis
-#convert mm9 to mm10
+#convert "p300 only all loops" file and "p300 only-H3K27me3 loops" file from mm9 to mm10
 
+#P300.only.all loop
 awk -v OFS='\t' '{print "chr"$1,$2,$3,"chr"$4,$5,$6}' /data/xieb2/2023_MEL_p300_PRC2_loop/20230523.MEL.p300/MEL.p300.ONLY.ALL.loop.txt > MEL.p300.ONLY.ALL.loop.mm9.bedpe 
 
-excel add loop name, score, strand1, strand2 to MEL.p300.ONLY.ALL.loop.mm9.bedpe, so that it becomes p300_only_loop.mm9.bedpe
+# excel add loop name, score, strand1, strand2 to MEL.p300.ONLY.ALL.loop.mm9.bedpe, so that it becomes p300_only_loop.mm9.bedpe
 # convert 
 #https://github.com/cauyrd/liftOverBedpe/blob/main/liftOverBedpe.py
 
@@ -170,6 +179,8 @@ python bedpe/liftOverBedpe/liftOverBedpe.py --lift bedpe/liftOverBedpe/liftOver 
 ###======================================================================================================================================
 ### 8. EXTENDED FIGURE. 4F
 ###======================================================================================================================================
+
+module load juicer
 
 juicer_tools apa  --threads 1 -w 6 -k VC_SQRT -u /data/xieb2/G1ER/4DNFI6H926RO.hic /gpfs/gsfs8/users/xieb2/2023_MEL_p300_PRC2_loop/20230523.MEL.p300/p300.only.loop.mm10.txt MEL.p300all.LOOP.APA_all_VC_SQRT_6
 
