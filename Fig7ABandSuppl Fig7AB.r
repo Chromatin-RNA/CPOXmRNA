@@ -1,6 +1,6 @@
 ##################################################################################################
 ###                                                                                            ###
-###        THIS FILE CONTAINS EXAMPLE CODE FOR FIGURE 6 A&B AND EXTENDED FIGURE 6 A&B          ###
+###        THIS FILE CONTAINS EXAMPLE CODE FOR FIGURE 7 A&B AND SUPPLEMENTARY FIGURE 7 A&B     ###
 ###                                                                                            ###
 ##################################################################################################
 
@@ -40,11 +40,8 @@ CELLTYPE.TAD = makeGenomicInteractionsFromFile("CELLTYPE.TAD.5K.bedpe",
 ### 2. 1 MOUSE REFSEQ TRANSCRIPTS
 ###===============================================================================================	
 
-# Mouse use makeTxDbFromGFF instead of makeTxDbFromUCSC, since "makeTxDbFromUCSC" recently suddenly not working
-#mm9.refseq.db <- makeTxDbFromUCSC(genome="mm9", tablename = "refGene")
 
-mm9.refseq.db <- makeTxDbFromGFF(file = "mm9_refGene.gtf",
-                                   format = "gtf")
+mm9.refseq.db <- makeTxDbFromUCSC(genome="mm9", tablename = "refGene")
 refseq.genes = genes(mm9.refseq.db)
 refseq.transcripts = transcriptsBy(mm9.refseq.db, by="gene")
 non_pseudogene = names(refseq.transcripts) %in% unlist(refseq.genes$gene_id) 
@@ -152,7 +149,7 @@ annotateInteractions(CELLTYPE.TAD, annotation.features)
 
 
 ###====================================================================================================================================
-### 6. Bar plot shows the distribution of different types of interaction observed at TAD boundary. Fig.6A & Ext.Fig.6A
+### 6. Bar plot shows the distribution of different types of interaction observed at TAD boundary. Fig.7A & Suppl.Fig.7A
 ###====================================================================================================================================
 
 ggbarplot(categoriseInteractions(CELLTYPE.TAD), x = "category", y = "count",
@@ -334,7 +331,7 @@ gene.body_gene.body_pair_gene <- TAD.boundary.sametype.gene.exp("gene.body",CH12
 
 ###=================================================================================================================================================================
 ### 11. Violin plot shows the expression level at each TAD boundary for Promoter-Terminator (PT), Promoter-Genebody (PG) and Promoter-Promoter (PP) boundary pairs.
-### Figure 6B & Ext.Fig.6B
+### Figure 7B & Suppl.Fig.7B
 ###==================================================================================================================================================================
 
 PTG.type.TAD = c(
@@ -357,11 +354,15 @@ PTG.value.TAD = c(
 
 
 
-PTG.value.TAD.2 = log10(PTG.value.TAD)
+PTG.value.TAD.2 = log(PTG.value.TAD+1)
 
-PTG.gene.exp.TAD = cbind.data.frame(PTG.type.TAD, PTG.value.TAD.2)
+PTG.gene.exp.TAD = data.frame(PTG.type.TAD, PTG.value.TAD.2)
 
-
+write.table(PTG.gene.exp.TAD,
+            "CELLTYPE.PTG.gene.exp.TAD.txt",
+            quote= F,
+            sep = "\t",
+            row.names = F)
 
 PTG.my_comparisons <- List(
                        c("PT.Promoter", "PT.Terminator"),
@@ -379,8 +380,8 @@ ggviolin(PTG.gene.exp.TAD, x = "PTG.type.TAD", y = "PTG.value.TAD.2",
           color = "PTG.type.TAD", palette = "jco",
          add = "mean",
          add.params = list(size = 1.5),
-         ylab = "log10(TPM)",title = "CELLTYPE")+
-  stat_compare_means(comparisons = PTG.my_comparisons, label = "p.signif", hide.ns = F, size = 8.5, vjust =0.5)+ # Add significance levels
+         ylab = "log(TPM+1)",title = "CELLTYPE")+
+  stat_compare_means(comparisons = PTG.my_comparisons, label = "p.format", hide.ns = F, size = 5.5, vjust =0.2)+ # Add significance levels
   #stat_compare_means(label.y = 7) +
    font("xlab", size = 18)+
    font("ylab", size = 18)+
@@ -390,4 +391,4 @@ ggviolin(PTG.gene.exp.TAD, x = "PTG.type.TAD", y = "PTG.value.TAD.2",
    rremove("legend")+
    rotate_x_text(angle = 45)
 
-ggsave("CELLTYPE.TAD.Promoter_PTG.GeneExp.6groups.violin.png",  width = 18, height = 16, units = "cm")
+ggsave("CELLTYPE.TAD.Promoter_PTG.GeneExp.6groups.violin.pdf",  width = 18, height = 16, units = "cm")
