@@ -170,31 +170,71 @@ MEL_p300.only.exp = only.gene.exp(MEL_p300.only)
 ###================================================================================================
 ### 12. Extended Data Fig. 4H---LEFT PANEL
 ###================================================================================================
-type.TAD.p300 = c(rep("non-H3K27me3 gene", length(MEL_p300.only.exp)),
+MEL_p300.only.exp.2 = na.omit(MEL_p300.only.exp)
 
-rep("H3K27me3 gene", length(MEL_p300.only.H3K27me3.gene.express)))
-
-value.TAD.p300 = c(MEL_p300.only.exp,MEL_p300.only.H3K27me3.gene.express)
+MEL_p300.only.H3K27me3.gene.express.2 = na.omit(MEL_p300.only.H3K27me3.gene.express)
 
 
+type.TAD.p300 = c(rep("non-H3K27me3 gene", length(MEL_p300.only.exp.2)),
 
-value.TAD.p300.2 = log10(value.TAD.p300)
+rep("H3K27me3 gene", length(MEL_p300.only.H3K27me3.gene.express.2)))
 
-p300.H3K27me3.gene.exp.TAD.p300 = cbind.data.frame(type.TAD.p300, value.TAD.p300.2)
-
-
-my_comparisons.p300 <- list( c("non-H3K27me3 gene", "H3K27me3 gene"))
+value.TAD.p300 = c(MEL_p300.only.exp.2,MEL_p300.only.H3K27me3.gene.express.2)
 
 
-ggviolin(p300.H3K27me3.gene.exp.TAD.p300, x = "type.TAD.p300", y = "value.TAD.p300.2", fill = "type.TAD.p300",
-         palette = c("#00AFBB", "#E7B800"),
-         add = "boxplot", add.params = list(fill = "white"),xlab = "TAD Boundary",
-  ylab = "log10(TPM)")+
-  stat_compare_means(comparisons = my_comparisons.p300,label = "p.signif", label.x = 1.5, label.y = 6)+ # Add significance levels
-  stat_compare_means(label.y = 8) +
-   font("xlab", size = 18)+
- font("ylab", size = 18)+
- font("xy.text", size = 18) 
+
+value.TAD.p300.2 = log(value.TAD.p300+1)
+
+p300.H3K27me3.gene.exp.TAD.p300 = data.frame(type.TAD.p300, value.TAD.p300.2)
+
+
+p300.H3K27me3.gene.exp.TAD.p300 <- p300.H3K27me3.gene.exp.TAD.p300 %>%
+  group_by(type.TAD.p300) %>%
+  mutate(ecdf = ecdf(value.TAD.p300.2)(value.TAD.p300.2))
+
+write.table(p300.H3K27me3.gene.exp.TAD.p300,"p300.H3K27me3.gene.exp.TAD.p300.txt",
+            sep = "\t",
+            quote = F,
+            row.names = F)
+
+
+# Create CDF plot with customized theme
+p <- ggplot(p300.H3K27me3.gene.exp.TAD.p300, aes(x = value.TAD.p300.2, y = cdf, color = type.TAD.p300)) +
+  geom_step(size = 1) +  # Increase line thickness
+  labs(x = "log(TPM+1)", y = "Cumulative Probability") +
+  scale_color_manual(values = c("#00AFBB", "#FC4E07")) +
+  guides(color = guide_legend(title = "TAD")) +
+  theme_minimal() +  # Use a minimal theme as a starting point
+  theme(              # Customize theme settings
+    panel.background = element_rect(fill = "white"),  # Set background to white
+    panel.grid.major = element_blank(),               # Remove grid lines
+    panel.grid.minor = element_blank(),               # Remove grid lines
+    axis.line = element_line(color = "black"),        # Set axis lines to black
+    axis.text = element_text(size = 18),             # Adjust axis text size
+    axis.title = element_text(size = 20),            # Adjust axis title size
+    legend.position = "right",                      # Position legend at bottom
+    legend.title = element_text(size = 20),          # Adjust legend title size
+    legend.text = element_text(size = 18)            # Adjust legend text size
+  )
+
+# Print the customized CDF plot
+print(p)
+
+ggsave("TAD.logTPM1.CDF_plot.pdf", p, width = 8, height = 6)
+
+
+res <- wilcox.test(value.TAD.p300.2 ~ type.TAD.p300, data = p300.H3K27me3.gene.exp.TAD.p300,
+                   exact = FALSE)
+res
+
+################################################################################
+# Wilcoxon rank sum test with continuity correction                            #
+#                                                                              #
+# data:  value by type                                                         #
+# W = 152940, p-value < 2.2e-16                                                #
+# alternative hypothesis: true location shift is not equal to 0                #
+#################################################################################
+res$p.value  #4.292973e-27
 
 
 ###================================================================================================
@@ -237,29 +277,67 @@ MEL_p300.only.loop.exp = only.gene.exp(MEL_p300.only.loop)
 ### 15. Extended Data Fig. 4H---RIGHT PANEL
 ###================================================================================================
 
-type.loop.p300 = c(rep("non-H3K27me3 gene", length(MEL_p300.only.loop.exp)),
+MEL_p300.only.loop.exp.2 =  na.omit(MEL_p300.only.loop.exp)
+p300.only.H3K27me3.loop.exp.2 = na.omit(p300.only.H3K27me3.loop.exp)
 
-rep("H3K27me3 gene", length(p300.only.H3K27me3.loop.exp)))
+type.loop.p300 = c(rep("non-H3K27me3 gene", length(MEL_p300.only.loop.exp.2)),
 
-value.loop.p300 = c(MEL_p300.only.loop.exp, p300.only.H3K27me3.loop.exp)
+rep("H3K27me3 gene", length(p300.only.H3K27me3.loop.exp.2)))
+
+value.loop.p300 = c(MEL_p300.only.loop.exp.2, p300.only.H3K27me3.loop.exp.2)
+
+value.loop.p300.2 = log(value.loop.p300+1)
+
+p300.H3K27me3.gene.exp.loop = data.frame(type.loop.p300, value.loop.p300.2)
+
+p300.H3K27me3.gene.exp.loop <- p300.H3K27me3.gene.exp.loop %>%
+  group_by(type.loop.p300) %>%
+  mutate(ecdf = ecdf(value.loop.p300.2)(value.loop.p300.2))
+
+write.table(p300.H3K27me3.gene.exp.loop,"p300.H3K27me3.gene.exp.loop.txt",
+            sep = "\t",
+            quote = F,
+            row.names = F)
 
 
+# Create CDF plot with customized theme
+p.loop <- ggplot(p300.H3K27me3.gene.exp.loop, aes(x = value.loop.p300.2, y = ecdf, color = type.loop.p300)) +
+  geom_step(size = 1) +  # Increase line thickness
+  labs(x = "log(TPM+1)", y = "Cumulative Probability") +
+  scale_color_manual(values = c("#E7B800", "#CC79A7")) +
+  guides(color = guide_legend(title = "Loop")) +
+  theme_minimal() +  # Use a minimal theme as a starting point
+  theme(              # Customize theme settings
+    panel.background = element_rect(fill = "white"),  # Set background to white
+    panel.grid.major = element_blank(),               # Remove grid lines
+    panel.grid.minor = element_blank(),               # Remove grid lines
+    axis.line = element_line(color = "black"),        # Set axis lines to black
+    axis.text = element_text(size = 18),             # Adjust axis text size
+    axis.title = element_text(size = 21),            # Adjust axis title size
+    legend.position = "right",                      # Position legend at bottom
+    legend.title = element_text(size = 20),          # Adjust legend title size
+    legend.text = element_text(size = 18)            # Adjust legend text size
+  )
 
-value.loop.p300.2 = log10(value.loop.p300)
+# Print the customized CDF plot
+print(p.loop)
 
-p300.H3K27me3.gene.exp.loop.p300 = cbind.data.frame(type.loop.p300, value.loop.p300.2)
+ggsave("Loop.logTPM1.CDF_plot.pdf", p.loop, width = 8, height = 6)
 
 
+res.loop <- wilcox.test(value.loop.p300.2 ~ type.loop.p300, data = p300.H3K27me3.gene.exp.loop,
+                   exact = FALSE)
+res.loop
 
-ggviolin(p300.H3K27me3.gene.exp.loop.p300, x = "type.loop.p300", y = "value.loop.p300.2", fill = "type.loop.p300",
-         palette = c("#00AFBB", "#E7B800", "#FC4E07"),
-         add = "boxplot", add.params = list(fill = "white"),xlab = "Chromatin loop",
-  ylab = "log10(TPM)")+
-  stat_compare_means(comparisons = my_comparisons.p300, label = "p.signif",label.y = 6, label.x = 1.5)+ # Add significance levels
-  stat_compare_means(label.y = 8) +
-   font("xlab", size = 18)+
- font("ylab", size = 18)+
- font("xy.text", size = 18) 
+######################################################################
+#                                                                    #
+#	Wilcoxon rank sum test with continuity correction            #
+#                                                                    #
+# data:  value.loop.p300.2 by type.loop.p300                         #
+# W = 5513588, p-value < 2.2e-16                                     #
+# alternative hypothesis: true location shift is not equal to 0      #
+######################################################################
+res.loop$p.value  #1.50719e-160
 
 ###================================================================================================
 ### 16. Extended Data Fig. 4E
