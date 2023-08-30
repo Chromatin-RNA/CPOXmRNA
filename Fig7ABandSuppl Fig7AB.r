@@ -354,7 +354,7 @@ PTG.value.TAD = c(
 
 
 
-PTG.value.TAD.2 = log(PTG.value.TAD+1)
+PTG.value.TAD.2 = log2(PTG.value.TAD+1)
 
 PTG.gene.exp.TAD = data.frame(PTG.type.TAD, PTG.value.TAD.2)
 
@@ -380,7 +380,7 @@ ggviolin(PTG.gene.exp.TAD, x = "PTG.type.TAD", y = "PTG.value.TAD.2",
           color = "PTG.type.TAD", palette = "jco",
          add = "mean",
          add.params = list(size = 1.5),
-         ylab = "log(TPM+1)",title = "CELLTYPE")+
+         ylab = "log2(TPM+1)",title = "CELLTYPE")+
   stat_compare_means(comparisons = PTG.my_comparisons, label = "p.format", hide.ns = F, size = 5.5, vjust =0.2)+ # Add significance levels
   #stat_compare_means(label.y = 7) +
    font("xlab", size = 18)+
