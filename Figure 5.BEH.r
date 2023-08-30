@@ -1,6 +1,6 @@
 ###############################################################################################
 ###                                                                                         ###
-###       THIS FILE CONTAINS CODE FOR Figure. 6 B,E,H                            ###
+###       THIS FILE CONTAINS CODE FOR Figure. 5 B,E,H                                       ###
 ###                                                                                         ###
 ###############################################################################################
 
@@ -168,7 +168,7 @@ MEL_p300.only = as.data.frame(G1ER.TAD[isInteractionType(G1ER.TAD, "p300.only.al
 MEL_p300.only.exp = only.gene.exp(MEL_p300.only)
 
 ###================================================================================================
-### 12. Fig. 6H---LEFT PANEL
+### 12. Fig. 5H---LEFT PANEL
 ###================================================================================================
 MEL_p300.only.exp.2 = na.omit(MEL_p300.only.exp)
 
@@ -183,7 +183,7 @@ value.TAD.p300 = c(MEL_p300.only.exp.2,MEL_p300.only.H3K27me3.gene.express.2)
 
 
 
-value.TAD.p300.2 = log(value.TAD.p300+1)
+value.TAD.p300.2 = log2(value.TAD.p300+1)
 
 p300.H3K27me3.gene.exp.TAD.p300 = data.frame(type.TAD.p300, value.TAD.p300.2)
 
@@ -220,7 +220,7 @@ p <- ggplot(p300.H3K27me3.gene.exp.TAD.p300, aes(x = value.TAD.p300.2, y = cdf, 
 # Print the customized CDF plot
 print(p)
 
-ggsave("TAD.logTPM1.CDF_plot.pdf", p, width = 8, height = 6)
+ggsave("TAD.log2TPM.CDF_plot.pdf", p, width = 8, height = 6,dpi=300)
 
 
 res <- wilcox.test(value.TAD.p300.2 ~ type.TAD.p300, data = p300.H3K27me3.gene.exp.TAD.p300,
@@ -274,7 +274,7 @@ MEL_p300.only.loop = as.data.frame(G1ER.loop[isInteractionType(G1ER.loop, "p300.
 MEL_p300.only.loop.exp = only.gene.exp(MEL_p300.only.loop)
 
 ###================================================================================================
-### 15. Fig. 6H---RIGHT PANEL
+### 15. Fig. 5H---RIGHT PANEL
 ###================================================================================================
 
 MEL_p300.only.loop.exp.2 =  na.omit(MEL_p300.only.loop.exp)
@@ -286,7 +286,7 @@ rep("H3K27me3 gene", length(p300.only.H3K27me3.loop.exp.2)))
 
 value.loop.p300 = c(MEL_p300.only.loop.exp.2, p300.only.H3K27me3.loop.exp.2)
 
-value.loop.p300.2 = log(value.loop.p300+1)
+value.loop.p300.2 = log2(value.loop.p300+1)
 
 p300.H3K27me3.gene.exp.loop = data.frame(type.loop.p300, value.loop.p300.2)
 
@@ -303,7 +303,7 @@ write.table(p300.H3K27me3.gene.exp.loop,"p300.H3K27me3.gene.exp.loop.txt",
 # Create CDF plot with customized theme
 p.loop <- ggplot(p300.H3K27me3.gene.exp.loop, aes(x = value.loop.p300.2, y = ecdf, color = type.loop.p300)) +
   geom_step(size = 1) +  # Increase line thickness
-  labs(x = "log(TPM+1)", y = "Cumulative Probability") +
+  labs(x = "log2(TPM+1)", y = "Cumulative Probability") +
   scale_color_manual(values = c("#E7B800", "#CC79A7")) +
   guides(color = guide_legend(title = "Loop")) +
   theme_minimal() +  # Use a minimal theme as a starting point
@@ -322,7 +322,7 @@ p.loop <- ggplot(p300.H3K27me3.gene.exp.loop, aes(x = value.loop.p300.2, y = ecd
 # Print the customized CDF plot
 print(p.loop)
 
-ggsave("Loop.logTPM1.CDF_plot.pdf", p.loop, width = 8, height = 6)
+ggsave("Loop.log2TPM.CDF_plot.pdf", p.loop, width = 8, height = 6, dpi=300)
 
 
 res.loop <- wilcox.test(value.loop.p300.2 ~ type.loop.p300, data = p300.H3K27me3.gene.exp.loop,
@@ -340,7 +340,7 @@ res.loop
 res.loop$p.value  #1.50719e-160
 
 ###================================================================================================
-### 16. Fig. 6E
+### 16. Fig. 5E
 ###================================================================================================
 
 # mirrored chart to show the interaction freq of TAD and loops
@@ -426,4 +426,4 @@ plot2 <- ggdotchart(dataToPlot, x = "Category", y = "loop",
 
 TAD.loop.interaction.categories.plot = gridExtra::grid.arrange(plot1, plot2, ncol = 2, widths = c(1,2.5)) 
 
-
+ggsave("TAD.loop.interaction.categories.pdf", TAD.loop.interaction.categories.plot,width = 20, height = 15, units = "cm", dpi=300)
