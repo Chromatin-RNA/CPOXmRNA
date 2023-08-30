@@ -165,7 +165,7 @@ ggbarplot(categoriseInteractions(CELLTYPE.TAD), x = "category", y = "count",
   font("title", size = 25)+
   font("xy.text", size = 25)
 
-ggsave("CELLTYPE.TAD.category.barplot.5kb.png", width = 25, height = 20, units = "cm")
+ggsave("CELLTYPE.TAD.category.barplot.5kb.png", width = 25, height = 20, units = "cm",dpi=300)
 
 
 ###===============================================================================================
@@ -391,4 +391,4 @@ ggviolin(PTG.gene.exp.TAD, x = "PTG.type.TAD", y = "PTG.value.TAD.2",
    rremove("legend")+
    rotate_x_text(angle = 45)
 
-ggsave("CELLTYPE.TAD.Promoter_PTG.GeneExp.6groups.violin.pdf",  width = 18, height = 16, units = "cm")
+ggsave("CELLTYPE.TAD.Promoter_PTG.GeneExp.6groups.violin.pdf",  width = 18, height = 16, units = "cm",dpi=300)
