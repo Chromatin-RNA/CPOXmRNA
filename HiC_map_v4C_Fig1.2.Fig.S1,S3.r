@@ -1,6 +1,6 @@
 ###################################################################################################
 ###                                                                                             ###
-###               THIS FILE CONTAINS CODE FOR FIG.1,2,3 & EXTENDED FIG.2, 5                     ###
+###               THIS FILE CONTAINS CODE FOR FIG.1,2 & SUPPLEMENTARY FIG.1, 3                  ###
 ###                                                                                             ###
 ###################################################################################################
 
@@ -40,37 +40,11 @@ crop_y = c(0, 0.45e6))
 
 
 
-###==========================================================================================
-### FIGURE 2A
-###==========================================================================================
 
-lateG1_hic_5kb = load_contacts(signal_path = '/data/xieb2/G1ER/4DNFI6H926RO.hic',
-                                sample_name = "G1ER_lateG1",
-                                resolution = 5000,
-                                balancing = 'T', # this is the default
-                                colour = "red")
-
-
-lateG1_hic_5kb_ST3GAL6_v4c = virtual_4C(lateG1_hic_5kb, 
-                                     data.frame("16",58508421,58529955), 
-                                     xlim = c(200000,200000))
-
-
-bed_CPOX = data.frame("16", 58670292, 58680386)
-bed_DCBLD2 = data.frame("16", 58408443,58469727)
-bed_ST3GAL6 = data.frame("16",58468125, 58523426 )
-bed_CPOXeRNA = data.frame("16", 58657447, 58662569)
-bed_E330017A01Rik = data.frame("16", 58635167, 58638739)
-
-								 
-bed_list_DCBLD2P_3 = list(bed_CPOX,bed_DCBLD2,bed_ST3GAL6, bed_CPOXeRNA, bed_E330017A01Rik)
-									 
-visualise(lateG1_hic_5kb_ST3GAL6_v4c, bedlist = bed_list_DCBLD2P_3,
-          bed_colours = c("dodgerblue","red","green","purple","orange"))+ theme(axis.text = element_text(size = 20))
 		  
 		  
 ###==========================================================================================
-### FIGURE 3B
+### FIGURE 2D
 ###==========================================================================================
 
 
@@ -82,7 +56,7 @@ visualise(lateG1_hic_5kb_v4c, bedlist = bed_list_DCBLD2P_3,
 		  
 		  
 ###==========================================================================================
-### FIGURE 3C
+### FIGURE 2E
 ###==========================================================================================		  
 		  
 
@@ -107,10 +81,35 @@ FLC_hic_5kb_v4c = virtual_4C(FLC_hic_5kb,
 visualise(FLC_hic_5kb_v4c, bedlist = bed_list_DCBLD2P_3_G1,
           bed_colours = c("dodgerblue","red","green","purple","orange"))+ theme(axis.text = element_text(size = 20))
 
+###============================================================================================
+### Supplementary Fig. 1G
+###============================================================================================
+Rd_0h_5K = load_contacts(signal_path = 'GSM5602658_red_blood_0h-Arima.mcool.multires.cool',
+                                sample_name = "red_blood_0h",
+                                resolution = 5000,
+                                balancing = 'T',
+                                colour = "cornflowerblue")
 
+
+Rd_DMSO_5K = load_contacts(signal_path = 'GSM5602660_red_blood_DMSO-Arima.mcool.multires.cool',
+                                sample_name = "red_blood_DMSO",
+                                resolution = 5000,
+                                balancing = 'T', 
+                                colour = "green")
+
+
+
+pdf(file = "diff_hic_map.5k.pdf")
+hic_matrixplot(exp1 = Rd_0h_5K,
+exp2 = Rd_DMSO_5K,
+chrom = 'chr16',
+start = 58370000,
+end=58740000,
+cut.off = 120) 
+dev.off()
 
 ###==========================================================================================
-### Extended Data Fig. 2A
+### Supplementary Fig. 3B
 ###==========================================================================================		
 
 ### CH12.LX TAD
@@ -150,35 +149,4 @@ chrom = "16", start = 58390000, end = 58730000
 
 
 
-
-###==========================================================================================
-### Extended Data Fig. 5B 
-###==========================================================================================	
-
-bed_KIF2A = data.frame("13", 106958996, 107022118)
-bed_IPO11 = data.frame("13", 106794439, 106936958)
-bed_Dimt1 = data.frame("13", 106947159, 106959760)
-
-bed_list_KIF2A = list(bed_KIF2A, bed_IPO11, bed_Dimt1)
-
-
-LateG1_5kb_KIF2A_IPO11P_2 = virtual_4C(lateG1_hic_5kb, 
-                                     data.frame("13", 106919481, 106940797), 
-                                     xlim = c(250000,300000))
-visualise(LateG1_5kb_KIF2A_IPO11P_2, bedlist = bed_list_KIF2A, 
-          bed_colours = c("dodgerblue","red","green","orange"))
-		  
-
-###==========================================================================================
-### Extended Data Fig. 5E
-###==========================================================================================	
-
-bed_CAR2 = data.frame("3", 14886428,14900770)
-bed_LRRCC1 = data.frame("3", 14533788, 14572658)
-
-
-bedlist_LRRCC1_P = list(bed_CAR2, bed_LRRCC1)
-LateG1_5kb_LRRCC1P_v4c = virtual_4C(lateG1_hic_5kb, "3:14529451-14535264", xlim = c(100000,400000))
-visualise(LateG1_5kb_LRRCC1P_v4c, bedlist = bedlist_LRRCC1_P, 
-          bed_colours = c("dodgerblue", "limegreen","red"))
 
