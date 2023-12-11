@@ -1,6 +1,6 @@
 ##################################################################################################
 ###                                                                                            ###
-###        THIS FILE CONTAINS EXAMPLE CODE FOR FIGURE 7 A&B AND SUPPLEMENTARY FIGURE 7 A&B     ###
+###        THIS FILE CONTAINS EXAMPLE CODE FOR FIGURE 6 A&B AND SUPPLEMENTARY FIGURE 6 A&B     ###
 ###                                                                                            ###
 ##################################################################################################
 
@@ -149,7 +149,7 @@ annotateInteractions(CELLTYPE.TAD, annotation.features)
 
 
 ###====================================================================================================================================
-### 6. Bar plot shows the distribution of different types of interaction observed at TAD boundary. Fig.7A & Suppl.Fig.7A
+### 6. Bar plot shows the distribution of different types of interaction observed at TAD boundary. Fig.6A & Suppl.Fig.6A
 ###====================================================================================================================================
 
 ggbarplot(categoriseInteractions(CELLTYPE.TAD), x = "category", y = "count",
@@ -331,7 +331,7 @@ gene.body_gene.body_pair_gene <- TAD.boundary.sametype.gene.exp("gene.body",CH12
 
 ###=================================================================================================================================================================
 ### 11. Violin plot shows the expression level at each TAD boundary for Promoter-Terminator (PT), Promoter-Genebody (PG) and Promoter-Promoter (PP) boundary pairs.
-### Figure 7B & Suppl.Fig.7B
+### Figure 6B & Suppl.Fig.6B
 ###==================================================================================================================================================================
 
 PTG.type.TAD = c(
